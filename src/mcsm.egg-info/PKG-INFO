@@ -1,0 +1,24 @@
+Metadata-Version: 2.4
+Name: mcsm
+Version: 0.1.0
+Summary: Minecraft Server Manager
+Author: Rikard Persson
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: typer
+Requires-Dist: rich
+Dynamic: license-file
+
+# Minecraft Server Manager (MCSM)
+
+A modern Minecraft server manager written in Python.
+
+## Goals
+
+- Easy installation
+- Server management
+- Backup & restore
+- Paper updates
+- Health monitoring
+- Beautiful CLI
