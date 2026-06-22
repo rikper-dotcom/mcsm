@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+from mcsm.models.doctor import DoctorResult
 from mcsm.services.system import (
-    has_git,
-    has_java,
+    git_version,
     has_minecraft_service,
     has_systemctl,
+    java_version,
     minecraft_service_running,
     paper_jar_exists,
     python_version,
@@ -14,16 +15,16 @@ from mcsm.services.system import (
 )
 
 
-def doctor() -> dict[str, str | bool]:
+def doctor() -> DoctorResult:
     """Run basic system diagnostics."""
 
-    return {
-        "python_version": python_version(),
-        "java": has_java(),
-        "git": has_git(),
-        "systemctl": has_systemctl(),
-        "minecraft_service": has_minecraft_service(),
-        "minecraft_running": minecraft_service_running(),
-        "server_directory": server_directory_exists(),
-        "paper_jar": paper_jar_exists(),
-    }
+    return DoctorResult(
+        python_version=python_version(),
+        java_version=java_version(),
+        git_version=git_version(),
+        systemctl=has_systemctl(),
+        minecraft_service=has_minecraft_service(),
+        minecraft_running=minecraft_service_running(),
+        server_directory=server_directory_exists(),
+        paper_jar=paper_jar_exists(),
+    )

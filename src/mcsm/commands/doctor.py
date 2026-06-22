@@ -27,21 +27,21 @@ def main() -> None:
     console.rule()
 
     console.print("[bold]System[/bold]")
-    console.print(f"{status(True)} Python              {result['python_version']}")
-    console.print(f"{status(result['java'])} Java")
-    console.print(f"{status(result['git'])} Git")
-    console.print(f"{status(result['systemctl'])} systemd")
+    console.print(f"{status(True)} Python              {result.python_version}")
+    console.print(f"{status(result.java_version is not None)} Java                {result.java_version or 'Not installed'}")
+    console.print(f"{status(result.git_version is not None)} Git                 {result.git_version or 'Not installed'}")
+    console.print(f"{status(result.systemctl)} systemd")
 
     console.print()
     console.print("[bold]Minecraft[/bold]")
-    console.print(f"{status(result['minecraft_service'])} Service installed")
-    console.print(f"{status(result['minecraft_running'])} Service running")
-    console.print(f"{status(result['server_directory'])} Server directory")
-    console.print(f"{status(result['paper_jar'])} Paper JAR")
+    console.print(f"{status(result.minecraft_service)} Service installed")
+    console.print(f"{status(result.minecraft_running)} Service running")
+    console.print(f"{status(result.server_directory)} Server directory")
+    console.print(f"{status(result.paper_jar)} Paper JAR")
 
     console.rule()
 
-    if all(result.values()):
+    if result.ok:
         console.print("[bold green]Everything looks good![/bold green]")
     else:
         console.print("[bold red]One or more checks failed.[/bold red]")

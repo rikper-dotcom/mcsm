@@ -14,14 +14,60 @@ def python_version() -> str:
     return platform.python_version()
 
 
+def java_version() -> str | None:
+    """Return the installed Java version."""
+
+    java = shutil.which("java")
+
+    if java is None:
+        return None
+
+    result = subprocess.run(
+        [java, "-version"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    output = result.stderr.splitlines()
+
+    if not output:
+        return None
+
+    return output[0].replace('"', "")
+
+
+def git_version() -> str | None:
+    """Return the installed Git version."""
+
+    git = shutil.which("git")
+
+    if git is None:
+        return None
+
+    result = subprocess.run(
+        [git, "--version"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    output = result.stdout.strip()
+
+    if not output:
+        return None
+
+    return output
+
+
 def has_java() -> bool:
     """Return True if Java is installed."""
-    return shutil.which("java") is not None
+    return java_version() is not None
 
 
 def has_git() -> bool:
     """Return True if Git is installed."""
-    return shutil.which("git") is not None
+    return git_version() is not None
 
 
 def has_systemctl() -> bool:
@@ -57,11 +103,9 @@ def minecraft_service_running() -> bool:
 
 def server_directory_exists() -> bool:
     """Return True if the server directory exists."""
-
     return SERVER_DIRECTORY.exists()
 
 
 def paper_jar_exists() -> bool:
     """Return True if paper.jar exists."""
-
     return PAPER_JAR.exists()
