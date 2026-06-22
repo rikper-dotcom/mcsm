@@ -1,3 +1,5 @@
+"""Doctor service."""
+
 from __future__ import annotations
 
 from mcsm.services.system import (
@@ -6,7 +8,9 @@ from mcsm.services.system import (
     has_minecraft_service,
     has_systemctl,
     minecraft_service_running,
+    paper_jar_exists,
     python_version,
+    server_directory_exists,
 )
 
 
@@ -20,4 +24,6 @@ def doctor() -> dict[str, str | bool]:
         "systemctl": has_systemctl(),
         "minecraft_service": has_minecraft_service(),
         "minecraft_running": minecraft_service_running(),
+        "server_directory": server_directory_exists(),
+        "paper_jar": paper_jar_exists(),
     }

@@ -1,8 +1,12 @@
+"""System related helper functions."""
+
 from __future__ import annotations
 
 import platform
 import shutil
 import subprocess
+
+from mcsm.config import PAPER_JAR, SERVER_DIRECTORY, SERVICE_NAME
 
 
 def python_version() -> str:
@@ -21,31 +25,43 @@ def has_git() -> bool:
 
 
 def has_systemctl() -> bool:
-    """Return True if systemd is available."""
+    """Return True if systemctl is available."""
     return shutil.which("systemctl") is not None
 
 
 def has_minecraft_service() -> bool:
-    """Return True if minecraft.service exists."""
+    """Return True if the Minecraft systemd service exists."""
 
     result = subprocess.run(
-        ["systemctl", "list-unit-files", "minecraft.service"],
+        ["systemctl", "list-unit-files", f"{SERVICE_NAME}.service"],
         capture_output=True,
         text=True,
         check=False,
     )
 
-    return "minecraft.service" in result.stdout
+    return f"{SERVICE_NAME}.service" in result.stdout
 
 
 def minecraft_service_running() -> bool:
-    """Return True if minecraft.service is running."""
+    """Return True if the Minecraft service is running."""
 
     result = subprocess.run(
-        ["systemctl", "is-active", "minecraft"],
+        ["systemctl", "is-active", SERVICE_NAME],
         capture_output=True,
         text=True,
         check=False,
     )
 
     return result.stdout.strip() == "active"
+
+
+def server_directory_exists() -> bool:
+    """Return True if the server directory exists."""
+
+    return SERVER_DIRECTORY.exists()
+
+
+def paper_jar_exists() -> bool:
+    """Return True if paper.jar exists."""
+
+    return PAPER_JAR.exists()
