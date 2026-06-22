@@ -2,12 +2,18 @@ import platform
 
 import typer
 
+from mcsm.__about__ import __version__
+from mcsm.commands.doctor import app as doctor_app
 from mcsm.console import console
-from mcsm.version import VERSION
 
 app = typer.Typer(
     no_args_is_help=True,
     help="Minecraft Server Manager",
+)
+
+app.add_typer(
+    doctor_app,
+    name="doctor",
 )
 
 
@@ -22,7 +28,7 @@ def version() -> None:
 
     console.print()
     console.print("[bold green]Minecraft Server Manager[/bold green]")
-    console.print(f"Version : [cyan]{VERSION}[/cyan]")
+    console.print(f"Version : [cyan]{__version__}[/cyan]")
     console.print(f"Python  : [yellow]{platform.python_version()}[/yellow]")
     console.print(f"System  : [magenta]{platform.system()}[/magenta]")
     console.print()
