@@ -7,7 +7,6 @@ src/mcsm/__main__.py
 src/mcsm/cli.py
 src/mcsm/config.py
 src/mcsm/console.py
-src/mcsm/version.py
 src/mcsm.egg-info/PKG-INFO
 src/mcsm.egg-info/SOURCES.txt
 src/mcsm.egg-info/dependency_links.txt
@@ -24,3 +23,9 @@ src/mcsm/core/__init__.py
 src/mcsm/core/server.py
 src/mcsm/core/system.py
 src/mcsm/core/utils.py
+src/mcsm/models/__init__.py
+src/mcsm/models/doctor.py
+src/mcsm/services/__init__.py
+src/mcsm/services/doctor.py
+src/mcsm/services/server.py
+src/mcsm/services/system.py
