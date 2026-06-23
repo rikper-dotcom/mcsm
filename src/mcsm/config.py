@@ -12,6 +12,8 @@ from pathlib import Path
 
 SERVICE_NAME = "minecraft"
 
+SYSTEMCTL = "systemctl"
+
 SERVER_DIRECTORY = Path("/srv/minecraft/server")
 
 PAPER_JAR = SERVER_DIRECTORY / "paper.jar"
