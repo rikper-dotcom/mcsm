@@ -2,23 +2,17 @@
 
 from __future__ import annotations
 
-import subprocess
-
-from mcsm.config import SERVICE_NAME, SYSTEMCTL
+from mcsm.config import SERVICE_NAME
 from mcsm.models.server import ServerResult
+from mcsm.services.systemd import run_systemctl
 
 
 def start_server() -> ServerResult:
     """Start the Minecraft server."""
 
-    result = subprocess.run(
-        [SYSTEMCTL, "start", SERVICE_NAME],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    result = run_systemctl("start", SERVICE_NAME)
 
-    if result.returncode == 0:
+    if result.success:
         return ServerResult(
             success=True,
             message="Server started.",

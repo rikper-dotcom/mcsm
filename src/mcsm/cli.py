@@ -8,6 +8,7 @@ import typer
 
 from mcsm.__about__ import __version__
 from mcsm.commands.doctor import app as doctor_app
+from mcsm.commands.install import app as install_app
 from mcsm.commands.status import app as status_app
 from mcsm.console import console
 
@@ -19,6 +20,11 @@ app = typer.Typer(
 app.add_typer(
     doctor_app,
     name="doctor",
+)
+
+app.add_typer(
+    install_app,
+    name="install",
 )
 
 app.add_typer(
