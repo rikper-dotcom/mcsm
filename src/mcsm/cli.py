@@ -1,9 +1,14 @@
+"""Main command line interface for MCSM."""
+
+from __future__ import annotations
+
 import platform
 
 import typer
 
 from mcsm.__about__ import __version__
 from mcsm.commands.doctor import app as doctor_app
+from mcsm.commands.status import app as status_app
 from mcsm.console import console
 
 app = typer.Typer(
@@ -14,6 +19,11 @@ app = typer.Typer(
 app.add_typer(
     doctor_app,
     name="doctor",
+)
+
+app.add_typer(
+    status_app,
+    name="status",
 )
 
 
