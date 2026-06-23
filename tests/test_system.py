@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from mcsm.services.system import (
     git_version,
+    has_systemctl,
     python_version,
 )
 
@@ -25,3 +26,9 @@ def test_git_version_returns_string() -> None:
     assert isinstance(version, str)
     assert version
     assert "git" in version.lower()
+
+
+def test_has_systemctl() -> None:
+    """systemctl should be available on this system."""
+
+    assert has_systemctl() is True
