@@ -17,10 +17,13 @@ def main() -> None:
     running = minecraft_service_running()
 
     console.print()
+    console.print("[bold cyan]Minecraft Status[/bold cyan]")
+    console.rule()
 
     if running:
-        console.print("[bold green]Minecraft server is running.[/bold green]")
+        console.print("[green]✓[/green] Running")
     else:
-        console.print("[bold red]Minecraft server is stopped.[/bold red]")
+        console.print("[red]✗[/red] Stopped")
 
+    console.rule()
     console.print()
