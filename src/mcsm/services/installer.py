@@ -2,8 +2,33 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 from mcsm.models.installer import InstallResult, InstallStep
-from mcsm.services.system import has_java, has_systemctl
+from mcsm.services.system import (
+    has_java,
+    has_systemctl,
+    paper_jar_exists,
+    server_directory_exists,
+)
+
+
+def add_check(
+    result: InstallResult,
+    check: Callable[[], bool],
+    success_message: str,
+    failure_message: str,
+) -> None:
+    """Run a check and append the result."""
+
+    success = check()
+
+    result.steps.append(
+        InstallStep(
+            success=success,
+            message=success_message if success else failure_message,
+        )
+    )
 
 
 def install() -> InstallResult:
@@ -11,35 +36,33 @@ def install() -> InstallResult:
 
     result = InstallResult(success=True)
 
-    if has_java():
-        result.steps.append(
-            InstallStep(
-                success=True,
-                message="Java detected.",
-            )
-        )
-    else:
-        result.steps.append(
-            InstallStep(
-                success=False,
-                message="Java not found.",
-            )
-        )
+    add_check(
+        result,
+        has_java,
+        "Java detected.",
+        "Java not found.",
+    )
 
-    if has_systemctl():
-        result.steps.append(
-            InstallStep(
-                success=True,
-                message="systemd detected.",
-            )
-        )
-    else:
-        result.steps.append(
-            InstallStep(
-                success=False,
-                message="systemd not found.",
-            )
-        )
+    add_check(
+        result,
+        has_systemctl,
+        "systemd detected.",
+        "systemd not found.",
+    )
+
+    add_check(
+        result,
+        server_directory_exists,
+        "Server directory exists.",
+        "Server directory not found.",
+    )
+
+    add_check(
+        result,
+        paper_jar_exists,
+        "Paper server found.",
+        "Paper server not found.",
+    )
 
     result.steps.append(
         InstallStep(
