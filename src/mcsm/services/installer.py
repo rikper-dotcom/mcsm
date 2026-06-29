@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from mcsm.models.installer import InstallResult, InstallStep
-from mcsm.services.system import has_java
+from mcsm.services.system import has_java, has_systemctl
 
 
 def install() -> InstallResult:
@@ -25,7 +25,21 @@ def install() -> InstallResult:
                 message="Java not found.",
             )
         )
-        result.success = False
+
+    if has_systemctl():
+        result.steps.append(
+            InstallStep(
+                success=True,
+                message="systemd detected.",
+            )
+        )
+    else:
+        result.steps.append(
+            InstallStep(
+                success=False,
+                message="systemd not found.",
+            )
+        )
 
     result.steps.append(
         InstallStep(
@@ -34,6 +48,6 @@ def install() -> InstallResult:
         )
     )
 
-    result.success = False
+    result.success = all(step.success for step in result.steps)
 
     return result
