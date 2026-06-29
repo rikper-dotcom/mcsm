@@ -106,6 +106,17 @@ def server_directory_exists() -> bool:
     return SERVER_DIRECTORY.exists()
 
 
+def ensure_server_directory() -> bool:
+    """Create the server directory if needed."""
+
+    try:
+        SERVER_DIRECTORY.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        return False
+
+    return SERVER_DIRECTORY.exists()
+
+
 def paper_jar_exists() -> bool:
     """Return True if paper.jar exists."""
     return PAPER_JAR.exists()

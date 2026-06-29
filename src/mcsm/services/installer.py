@@ -32,7 +32,7 @@ def add_check(
 
 
 def install() -> InstallResult:
-    """Install Minecraft server prerequisites."""
+    """Verify Minecraft server prerequisites."""
 
     result = InstallResult(success=True)
 

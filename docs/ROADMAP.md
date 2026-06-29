@@ -1,14 +1,15 @@
 # MCSM Roadmap
 
-Minecraft Server Manager is developed incrementally. Each milestone should be completed, tested and committed before moving on to the next.
+Minecraft Server Manager is developed incrementally. Every milestone should be completed, tested and committed before moving on to the next.
 
 ---
 
-## ✅ Milestone 1 – Foundation
+# ✅ Milestone 1 – Foundation
 
 Completed.
 
 - [x] Project structure
+- [x] Configuration
 - [x] CLI
 - [x] Version command
 - [x] Doctor command
@@ -20,12 +21,20 @@ Completed.
 
 ---
 
-## 🚧 Milestone 2 – Installation
+# 🚧 Milestone 2 – Installation
 
 In progress.
 
-- [ ] Install command
-- [ ] Java verification
+### Verification
+
+- [x] Install command
+- [x] Java verification
+- [x] systemd verification
+- [x] Server directory verification
+- [x] Paper verification
+
+### Installation
+
 - [ ] Create server directories
 - [ ] Download Paper
 - [ ] Create minecraft.service
@@ -34,17 +43,19 @@ In progress.
 
 ---
 
-## ⏳ Milestone 3 – Server Management
+# 🚧 Milestone 3 – Server Management
 
-- [ ] Start server
-- [ ] Stop server
-- [ ] Restart server
+In progress.
+
+- [x] Start server
+- [x] Stop server
+- [x] Restart server
 - [ ] Enable service
 - [ ] Disable service
 
 ---
 
-## ⏳ Milestone 4 – Backups
+# ⏳ Milestone 4 – Backups
 
 - [ ] Create backup
 - [ ] Restore backup
@@ -52,7 +63,7 @@ In progress.
 
 ---
 
-## ⏳ Milestone 5 – Updates
+# ⏳ Milestone 5 – Updates
 
 - [ ] Check for Paper updates
 - [ ] Download update
@@ -61,7 +72,17 @@ In progress.
 
 ---
 
-## Future Ideas
+# ⏳ Milestone 6 – Polish
+
+- [ ] Improve error messages
+- [ ] Expand test coverage
+- [ ] Improve documentation
+- [ ] Logging
+- [ ] Configuration validation
+
+---
+
+# 💡 Future Ideas
 
 - Plugin management
 - Mod management
