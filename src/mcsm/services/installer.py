@@ -16,6 +16,7 @@ from mcsm.services.system import (
     server_directory_exists,
 )
 from mcsm.services.systemd import create_minecraft_service
+from mcsm.services.users import create_minecraft_user
 
 
 def add_check(
@@ -62,6 +63,25 @@ def _verify_prerequisites(result: InstallResult) -> bool:
         is_root,
         "Running as administrator.",
         "Administrator privileges are required.",
+    )
+
+    return success
+
+
+def _create_user(result: InstallResult) -> bool:
+    """Create the minecraft system user."""
+
+    success = create_minecraft_user()
+
+    result.steps.append(
+        InstallStep(
+            success=success,
+            message=(
+                "Minecraft user ready."
+                if success
+                else "Failed to create minecraft user."
+            ),
+        )
     )
 
     return success
@@ -153,6 +173,10 @@ def install() -> InstallResult:
     result = InstallResult(success=True)
 
     if not _verify_prerequisites(result):
+        result.success = False
+        return result
+
+    if not _create_user(result):
         result.success = False
         return result
 

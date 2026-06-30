@@ -14,15 +14,17 @@ SERVICE_NAME = "minecraft"
 
 SYSTEMCTL = "systemctl"
 
-SERVER_DIRECTORY = Path("/srv/minecraft/server")
+MINECRAFT_DIRECTORY = Path("/srv/minecraft")
+
+SERVER_DIRECTORY = MINECRAFT_DIRECTORY / "server"
 
 PAPER_JAR = SERVER_DIRECTORY / "paper.jar"
 
 WORLD_DIRECTORY = SERVER_DIRECTORY / "world"
 
-BACKUP_DIRECTORY = Path("/srv/minecraft/backups")
+BACKUP_DIRECTORY = MINECRAFT_DIRECTORY / "backups"
 
-DOWNLOAD_DIRECTORY = Path("/srv/minecraft/downloads")
+DOWNLOAD_DIRECTORY = MINECRAFT_DIRECTORY / "downloads"
 
 # ---------------------------------------------------------------------
 # systemd
