@@ -31,10 +31,8 @@ def add_check(
     )
 
 
-def install() -> InstallResult:
-    """Verify Minecraft server prerequisites."""
-
-    result = InstallResult(success=True)
+def _verify_prerequisites(result: InstallResult) -> None:
+    """Verify that all installation prerequisites are met."""
 
     add_check(
         result,
@@ -63,6 +61,14 @@ def install() -> InstallResult:
         "Paper server found.",
         "Paper server not found.",
     )
+
+
+def install() -> InstallResult:
+    """Verify Minecraft server prerequisites."""
+
+    result = InstallResult(success=True)
+
+    _verify_prerequisites(result)
 
     result.steps.append(
         InstallStep(
