@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import platform
 import shutil
 import subprocess
@@ -75,6 +76,11 @@ def has_systemctl() -> bool:
     return shutil.which("systemctl") is not None
 
 
+def is_root() -> bool:
+    """Return True if the current user is root."""
+    return os.geteuid() == 0
+
+
 def has_minecraft_service() -> bool:
     """Return True if the Minecraft systemd service exists."""
 
@@ -106,17 +112,20 @@ def server_directory_exists() -> bool:
     return SERVER_DIRECTORY.exists()
 
 
+def paper_jar_exists() -> bool:
+    """Return True if paper.jar exists."""
+    return PAPER_JAR.exists()
+
+
 def ensure_server_directory() -> bool:
     """Create the server directory if needed."""
 
     try:
-        SERVER_DIRECTORY.mkdir(parents=True, exist_ok=True)
+        SERVER_DIRECTORY.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+        return True
+
     except OSError:
         return False
-
-    return SERVER_DIRECTORY.exists()
-
-
-def paper_jar_exists() -> bool:
-    """Return True if paper.jar exists."""
-    return PAPER_JAR.exists()

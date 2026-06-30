@@ -1,0 +1,24 @@
+[Unit]
+Description=Minecraft Server
+After=network.target
+
+[Service]
+Type=simple
+
+User=minecraft
+Group=minecraft
+
+WorkingDirectory={{SERVER_DIRECTORY}}
+
+ExecStart={{JAVA_EXECUTABLE}} -Xms{{MIN_MEMORY}} -Xmx{{MAX_MEMORY}} -jar paper.jar nogui
+
+Restart=on-failure
+RestartSec=5
+
+StandardOutput=journal
+StandardError=journal
+
+SuccessExitStatus=0 143
+
+[Install]
+WantedBy=multi-user.target

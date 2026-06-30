@@ -11,9 +11,11 @@ from mcsm.services.system import (
     ensure_server_directory,
     has_java,
     has_systemctl,
+    is_root,
     paper_jar_exists,
     server_directory_exists,
 )
+from mcsm.services.systemd import create_minecraft_service
 
 
 def add_check(
@@ -55,24 +57,51 @@ def _verify_prerequisites(result: InstallResult) -> bool:
         "systemd not found.",
     )
 
+    success &= add_check(
+        result,
+        is_root,
+        "Running as administrator.",
+        "Administrator privileges are required.",
+    )
+
     return success
 
 
 def _prepare_system(result: InstallResult) -> bool:
     """Prepare the system for installation."""
 
-    success = ensure_server_directory()
+    success = True
+
+    directory_ready = ensure_server_directory()
 
     result.steps.append(
         InstallStep(
-            success=success,
+            success=directory_ready,
             message=(
                 "Server directory ready."
-                if success
+                if directory_ready
                 else "Failed to create server directory."
             ),
         )
     )
+
+    success &= directory_ready
+
+    if success:
+        service_created = create_minecraft_service()
+
+        result.steps.append(
+            InstallStep(
+                success=service_created,
+                message=(
+                    "minecraft.service created."
+                    if service_created
+                    else "Failed to create minecraft.service."
+                ),
+            )
+        )
+
+        success &= service_created
 
     return success
 
