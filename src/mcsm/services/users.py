@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 import pwd
-import subprocess
 
 from mcsm.config import (
     MINECRAFT_DIRECTORY,
     MINECRAFT_USER,
 )
+from mcsm.services.command import run_command
 
 
 def minecraft_user_exists() -> bool:
@@ -28,19 +28,14 @@ def create_minecraft_user() -> bool:
     if minecraft_user_exists():
         return True
 
-    result = subprocess.run(
-        [
-            "useradd",
-            "--system",
-            "--home",
-            str(MINECRAFT_DIRECTORY),
-            "--shell",
-            "/usr/sbin/nologin",
-            MINECRAFT_USER,
-        ],
-        capture_output=True,
-        text=True,
-        check=False,
+    result = run_command(
+        "useradd",
+        "--system",
+        "--home",
+        str(MINECRAFT_DIRECTORY),
+        "--shell",
+        "/usr/sbin/nologin",
+        MINECRAFT_USER,
     )
 
     return result.returncode == 0

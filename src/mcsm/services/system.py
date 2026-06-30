@@ -5,9 +5,9 @@ from __future__ import annotations
 import os
 import platform
 import shutil
-import subprocess
 
-from mcsm.config import PAPER_JAR, SERVER_DIRECTORY, SERVICE_NAME
+from mcsm.config import PAPER_JAR, SERVER_DIRECTORY, SERVICE_NAME, SYSTEMCTL
+from mcsm.services.command import run_command
 
 
 def python_version() -> str:
@@ -23,11 +23,9 @@ def java_version() -> str | None:
     if java is None:
         return None
 
-    result = subprocess.run(
-        [java, "-version"],
-        capture_output=True,
-        text=True,
-        check=False,
+    result = run_command(
+        java,
+        "-version",
     )
 
     output = result.stderr.splitlines()
@@ -46,11 +44,9 @@ def git_version() -> str | None:
     if git is None:
         return None
 
-    result = subprocess.run(
-        [git, "--version"],
-        capture_output=True,
-        text=True,
-        check=False,
+    result = run_command(
+        git,
+        "--version",
     )
 
     output = result.stdout.strip()
@@ -73,7 +69,7 @@ def has_git() -> bool:
 
 def has_systemctl() -> bool:
     """Return True if systemctl is available."""
-    return shutil.which("systemctl") is not None
+    return shutil.which(SYSTEMCTL) is not None
 
 
 def is_root() -> bool:
@@ -84,11 +80,10 @@ def is_root() -> bool:
 def has_minecraft_service() -> bool:
     """Return True if the Minecraft systemd service exists."""
 
-    result = subprocess.run(
-        ["systemctl", "list-unit-files", f"{SERVICE_NAME}.service"],
-        capture_output=True,
-        text=True,
-        check=False,
+    result = run_command(
+        SYSTEMCTL,
+        "list-unit-files",
+        f"{SERVICE_NAME}.service",
     )
 
     return f"{SERVICE_NAME}.service" in result.stdout
@@ -97,11 +92,10 @@ def has_minecraft_service() -> bool:
 def minecraft_service_running() -> bool:
     """Return True if the Minecraft service is running."""
 
-    result = subprocess.run(
-        ["systemctl", "is-active", SERVICE_NAME],
-        capture_output=True,
-        text=True,
-        check=False,
+    result = run_command(
+        SYSTEMCTL,
+        "is-active",
+        SERVICE_NAME,
     )
 
     return result.stdout.strip() == "active"

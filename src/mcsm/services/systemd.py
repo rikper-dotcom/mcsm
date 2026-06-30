@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import subprocess
 from importlib import resources
 
 from mcsm.config import (
@@ -15,19 +14,19 @@ from mcsm.config import (
     SERVICE_FILE,
     SYSTEMCTL,
 )
+from mcsm.services.command import run_command
 
 
 def run_systemctl(
     command: str,
     service: str,
-) -> subprocess.CompletedProcess[str]:
+):
     """Run a systemctl command."""
 
-    return subprocess.run(
-        [SYSTEMCTL, command, service],
-        capture_output=True,
-        text=True,
-        check=False,
+    return run_command(
+        SYSTEMCTL,
+        command,
+        service,
     )
 
 
@@ -79,7 +78,6 @@ def create_minecraft_service() -> bool:
         SERVICE_FILE.write_text(
             render_service_template(),
         )
-
         return True
 
     except OSError:
