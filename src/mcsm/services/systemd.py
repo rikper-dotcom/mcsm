@@ -12,6 +12,7 @@ from mcsm.config import (
     MINECRAFT_USER,
     SERVER_DIRECTORY,
     SERVICE_FILE,
+    SERVICE_NAME,
     SYSTEMCTL,
 )
 from mcsm.services.command import run_command
@@ -28,6 +29,29 @@ def run_systemctl(
         command,
         service,
     )
+
+
+def reload_daemon() -> bool:
+    """Reload the systemd daemon."""
+
+    result = run_command(
+        SYSTEMCTL,
+        "daemon-reload",
+    )
+
+    return result.success
+
+
+def enable_service() -> bool:
+    """Enable the Minecraft systemd service."""
+
+    result = run_command(
+        SYSTEMCTL,
+        "enable",
+        SERVICE_NAME,
+    )
+
+    return result.success
 
 
 def systemd_error_message(stderr: str) -> str:
@@ -78,6 +102,7 @@ def create_minecraft_service() -> bool:
         SERVICE_FILE.write_text(
             render_service_template(),
         )
+
         return True
 
     except OSError:

@@ -6,9 +6,9 @@ from collections.abc import Callable
 
 from mcsm.config import PAPER_JAR
 from mcsm.models.installer import InstallResult, InstallStep
+from mcsm.services.filesystem import create_minecraft_directories
 from mcsm.services.paper import download_latest_paper
 from mcsm.services.system import (
-    ensure_server_directory,
     has_java,
     has_systemctl,
     is_root,
@@ -87,41 +87,40 @@ def _create_user(result: InstallResult) -> bool:
     return success
 
 
-def _prepare_system(result: InstallResult) -> bool:
-    """Prepare the system for installation."""
+def _create_directories(result: InstallResult) -> bool:
+    """Create the required Minecraft directories."""
 
-    success = True
-
-    directory_ready = ensure_server_directory()
+    success = create_minecraft_directories()
 
     result.steps.append(
         InstallStep(
-            success=directory_ready,
+            success=success,
             message=(
-                "Server directory ready."
-                if directory_ready
-                else "Failed to create server directory."
+                "Minecraft directories ready."
+                if success
+                else "Failed to create Minecraft directories."
             ),
         )
     )
 
-    success &= directory_ready
+    return success
 
-    if success:
-        service_created = create_minecraft_service()
 
-        result.steps.append(
-            InstallStep(
-                success=service_created,
-                message=(
-                    "minecraft.service created."
-                    if service_created
-                    else "Failed to create minecraft.service."
-                ),
-            )
+def _create_service(result: InstallResult) -> bool:
+    """Create the minecraft.service file."""
+
+    success = create_minecraft_service()
+
+    result.steps.append(
+        InstallStep(
+            success=success,
+            message=(
+                "minecraft.service created."
+                if success
+                else "Failed to create minecraft.service."
+            ),
         )
-
-        success &= service_created
+    )
 
     return success
 
@@ -180,7 +179,11 @@ def install() -> InstallResult:
         result.success = False
         return result
 
-    if not _prepare_system(result):
+    if not _create_directories(result):
+        result.success = False
+        return result
+
+    if not _create_service(result):
         result.success = False
         return result
 
