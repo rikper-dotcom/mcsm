@@ -27,6 +27,19 @@ BACKUP_DIRECTORY = MINECRAFT_DIRECTORY / "backups"
 DOWNLOAD_DIRECTORY = MINECRAFT_DIRECTORY / "downloads"
 
 # ---------------------------------------------------------------------
+# PaperMC
+# ---------------------------------------------------------------------
+
+PAPER_PROJECT = "paper"
+
+PAPER_API = "https://fill.papermc.io/v3/projects"
+
+HTTP_USER_AGENT = (
+    "mcsm/0.1 "
+    "(https://github.com/rikardpersson/mcsm)"
+)
+
+# ---------------------------------------------------------------------
 # systemd
 # ---------------------------------------------------------------------
 

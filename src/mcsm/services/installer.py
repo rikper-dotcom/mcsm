@@ -6,7 +6,10 @@ from collections.abc import Callable
 
 from mcsm.config import PAPER_JAR
 from mcsm.models.installer import InstallResult, InstallStep
-from mcsm.services.filesystem import create_minecraft_directories
+from mcsm.services.filesystem import (
+    configure_filesystem,
+    create_minecraft_directories,
+)
 from mcsm.services.paper import download_latest_paper
 from mcsm.services.system import (
     has_java,
@@ -15,7 +18,11 @@ from mcsm.services.system import (
     paper_jar_exists,
     server_directory_exists,
 )
-from mcsm.services.systemd import create_minecraft_service
+from mcsm.services.systemd import (
+    create_minecraft_service,
+    enable_service,
+    reload_daemon,
+)
 from mcsm.services.users import create_minecraft_user
 
 
@@ -106,6 +113,25 @@ def _create_directories(result: InstallResult) -> bool:
     return success
 
 
+def _configure_filesystem(result: InstallResult) -> bool:
+    """Configure the Minecraft filesystem."""
+
+    success = configure_filesystem()
+
+    result.steps.append(
+        InstallStep(
+            success=success,
+            message=(
+                "Ownership configured."
+                if success
+                else "Failed to configure ownership."
+            ),
+        )
+    )
+
+    return success
+
+
 def _create_service(result: InstallResult) -> bool:
     """Create the minecraft.service file."""
 
@@ -118,6 +144,44 @@ def _create_service(result: InstallResult) -> bool:
                 "minecraft.service created."
                 if success
                 else "Failed to create minecraft.service."
+            ),
+        )
+    )
+
+    return success
+
+
+def _reload_systemd(result: InstallResult) -> bool:
+    """Reload the systemd daemon."""
+
+    success = reload_daemon()
+
+    result.steps.append(
+        InstallStep(
+            success=success,
+            message=(
+                "systemd daemon reloaded."
+                if success
+                else "Failed to reload systemd daemon."
+            ),
+        )
+    )
+
+    return success
+
+
+def _enable_service(result: InstallResult) -> bool:
+    """Enable the Minecraft service."""
+
+    success = enable_service()
+
+    result.steps.append(
+        InstallStep(
+            success=success,
+            message=(
+                "Minecraft service enabled."
+                if success
+                else "Failed to enable Minecraft service."
             ),
         )
     )
@@ -183,7 +247,19 @@ def install() -> InstallResult:
         result.success = False
         return result
 
+    if not _configure_filesystem(result):
+        result.success = False
+        return result
+
     if not _create_service(result):
+        result.success = False
+        return result
+
+    if not _reload_systemd(result):
+        result.success = False
+        return result
+
+    if not _enable_service(result):
         result.success = False
         return result
 

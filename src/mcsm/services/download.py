@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from pathlib import Path
-from urllib.error import URLError
-from urllib.request import urlretrieve
+from urllib.error import HTTPError, URLError
+
+from mcsm.services.http import open_url
 
 
 def download_file(
@@ -19,12 +20,14 @@ def download_file(
             exist_ok=True,
         )
 
-        urlretrieve(
-            url,
-            destination,
-        )
+        with open_url(url) as response:
+            destination.write_bytes(response.read())
 
         return True
 
-    except URLError:
+    except (
+        HTTPError,
+        URLError,
+        OSError,
+    ):
         return False

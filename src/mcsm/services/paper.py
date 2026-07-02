@@ -4,50 +4,61 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from urllib.request import urlopen
+from urllib.error import HTTPError, URLError
 
+from mcsm.config import PAPER_API, PAPER_PROJECT
 from mcsm.services.download import download_file
-
-PAPER_API = "https://api.papermc.io/v2/projects/paper"
-
-
-def latest_version() -> str:
-    """Return the latest Paper version."""
-
-    with urlopen(PAPER_API) as response:
-        data = json.load(response)
-
-    return data["versions"][-1]
+from mcsm.services.http import open_url
 
 
-def latest_build() -> int:
-    """Return the latest Paper build number."""
+def latest_download_url() -> str | None:
+    """Return the latest stable Paper download URL."""
 
-    version = latest_version()
+    try:
+        with open_url(f"{PAPER_API}/{PAPER_PROJECT}") as response:
+            project = json.load(response)
 
-    with urlopen(f"{PAPER_API}/versions/{version}") as response:
-        data = json.load(response)
+        for versions in project["versions"].values():
+            version = versions[0]
 
-    return data["builds"][-1]
+            with open_url(
+                f"{PAPER_API}/{PAPER_PROJECT}/versions/{version}/builds"
+            ) as response:
+                builds = json.load(response)
 
+            stable = next(
+                (
+                    build
+                    for build in builds
+                    if build["channel"] == "STABLE"
+                ),
+                None,
+            )
 
-def latest_download_url() -> str:
-    """Return the latest Paper download URL."""
+            if stable is not None:
+                return stable["downloads"]["server:default"]["url"]
 
-    version = latest_version()
-    build = latest_build()
+    except (
+        HTTPError,
+        URLError,
+        KeyError,
+        ValueError,
+        TypeError,
+    ):
+        return None
 
-    return (
-        f"{PAPER_API}/versions/{version}"
-        f"/builds/{build}"
-        f"/downloads/paper-{version}-{build}.jar"
-    )
+    return None
 
 
 def download_latest_paper(destination: Path) -> bool:
     """Download the latest Paper server."""
 
+    url = latest_download_url()
+
+    if url is None:
+        return False
+
     return download_file(
-        latest_download_url(),
+        url,
         destination,
     )
